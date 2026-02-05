@@ -1,0 +1,12 @@
+{
+    "buildCommand": "cd anatomy-app && npm install && npm run build",
+    "outputDirectory": "anatomy-app/dist",
+    "installCommand": "npm install",
+    "framework": "vite",
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
+}
