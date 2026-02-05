@@ -3,13 +3,29 @@ import { useGLTF, Html } from "@react-three/drei";
 import * as THREE from "three";
 
 function BonePart({ url, id, onSelect, selectedBone, hoveredPart, setHoveredPart }) {
-    const { scene } = useGLTF(url);
+    const [loadError, setLoadError] = useState(null);
+
+    let scene;
+    try {
+        const gltf = useGLTF(url);
+        scene = gltf.scene;
+    } catch (error) {
+        console.error(`Failed to load model: ${url}`, error);
+        setLoadError(error.message);
+    }
 
     // Calculate center for hotspot
     const center = useMemo(() => {
+        if (!scene) return new THREE.Vector3();
         const box = new THREE.Box3().setFromObject(scene);
         return box.getCenter(new THREE.Vector3());
     }, [scene]);
+
+    // If there's an error loading, show a placeholder
+    if (loadError || !scene) {
+        console.warn(`Model ${id} failed to load from ${url}:`, loadError);
+        return null;
+    }
 
     // Determine if this part is selected or hovered
     const isSelected = selectedBone === id;
